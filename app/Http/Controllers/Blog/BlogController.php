@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function display(){
+    public function display()
+    {
         //every one can see the blog
         $blogs = Blog::all();
         return response()->json([
@@ -39,32 +40,28 @@ class BlogController extends Controller
 
     public function update(BlogUpdateRequest $request)
     {
-        $id = $request->blog_id;
-        // $request->validated();
-        // $blog = Blog::find($id);
-        // $blog->update($request->all());
-        // return response()->json([
-        //     "status" => true,
-        //     "message" => "Blog updated successfully",
-        //     "data" => $blog
-        // ]);
-
-        // only that authorized user can update blog where the id matches
-        $blog = Blog::find($blog_id);
-        $user_id = auth()->user()->id;
-        if($blog->blog_id == $user_id){
-            $blog->update($request->all());
+        $blog_id = $request->blog_id;
+        $filldata = [
+            "title" => $request->title,
+            "description" => $request->description
+        ];
+        if (!Blog::where("id", $blog_id)->update($filldata)) {
             return response()->json([
-                "status" => true,
-                "message" => "Blog updated successfully",
-                "data" => $blog
+                "status" => false,
+                "message" => "Blog not found",
+                "data" => []
             ]);
         }
+        return response()->json([
+            "status" => true,
+            "message" => "Blog updated successfully",
+            "data" => Blog::find($blog_id)
+        ]);
     }
 
     public function destroy(BlogDeleteRequest $request)
     {
-        $id = $request->blog_id;
+        $blog_id = $request->blog_id;
         // $request->validated();
         // $blog = Blog::find($id);
         // $blog->delete();
@@ -77,7 +74,7 @@ class BlogController extends Controller
         // only that authorized user can delete blog where the id matches
         $blog = Blog::find($blog_id);
         $user_id = auth()->user()->id;
-        if($blog->blog_id == $user_id){
+        if ($blog->blog_id == $user_id) {
             $blog->delete();
             return response()->json([
                 "status" => true,
