@@ -6,6 +6,7 @@ use App\Http\Requests\BlogDeleteRequest;
 use App\Http\Requests\BlogStoreRequest;
 use App\Http\Requests\BlogUpdateRequest;
 use App\Http\Controllers\Controller;
+use Http;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -30,7 +31,13 @@ class BlogController extends Controller
             "title" => $request->title,
             "description" => $request->description
         ];
+        $sendData = [
+            "subject" => "New blog created",
+            "title" => $request->title,
+            "description" => $request->description
+        ];
         $blog = Blog::create($filldata);
+        Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
         return response()->json([
             "status" => true,
             "message" => "Blog created successfully",
@@ -45,6 +52,12 @@ class BlogController extends Controller
             "title" => $request->title,
             "description" => $request->description
         ];
+        $sendData = [
+            "subject" => "Blog with id." . $blog_id . " updated",
+            "title" => $request->title,
+            "description" => $request->description
+        ];
+
         if (!Blog::where("id", $blog_id)->update($filldata)) {
             return response()->json([
                 "status" => false,
@@ -52,6 +65,7 @@ class BlogController extends Controller
                 "data" => []
             ]);
         }
+        Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
         return response()->json([
             "status" => true,
             "message" => "Blog updated successfully",
