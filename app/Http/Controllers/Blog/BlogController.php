@@ -40,7 +40,7 @@ class BlogController extends Controller
                 "tag" => $blog->tag ?? "",
                 "created_at" => $blog->created_at,
                 "created_by" => $blog->users->name,
-                "is_deleted" => $blog->isdeleted ? true : false,
+                "is_deleted" => $blog->isdeleted,
                 "seo" => [
                     "meta.name" => $blog->title,
                     "meta.desc" => $blog->description,
