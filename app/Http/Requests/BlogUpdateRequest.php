@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Blog;
 
@@ -10,6 +11,7 @@ class BlogUpdateRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
+    protected $error = "";
     public function authorize(): bool
     {
         if (!auth()->check()) {
@@ -17,12 +19,21 @@ class BlogUpdateRequest extends FormRequest
         }
         $user_id = auth()->user()->id;
         // only authorized user can update notes 
-        if(Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()){
-
-            return true;
+        if(! $this->blog_id){
+            $this->error = "please enter blog id";
+            return false;
+        }
+        if(!Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()){
+            $this->error = "You are not allowed to update other person blog";
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    protected function failedAuthorization()
+    {
+        throw new AuthorizationException($this->error);
     }
 
     /**

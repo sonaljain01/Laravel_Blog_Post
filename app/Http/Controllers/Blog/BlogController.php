@@ -58,15 +58,23 @@ class BlogController extends Controller
             "title" => $request->title,
             "description" => $request->description
         ];
-
-        if (!Blog::where("id", $blog_id)->update($filldata)) {
+        $isBlogExist = Blog::find($blog_id);
+        if (!$isBlogExist) {
             return response()->json([
                 "status" => false,
                 "message" => "Blog not found",
-                "data" => []
             ]);
         }
-        Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
+
+        $isUpdate = $isBlogExist->update($filldata);
+        if (!$isUpdate) {
+            return response()->json([
+                "status" => false,
+                "message" => "Unable to update blog",
+            ]);
+        }
+
+        // Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
         return response()->json([
             "status" => true,
             "message" => "Blog updated successfully",
