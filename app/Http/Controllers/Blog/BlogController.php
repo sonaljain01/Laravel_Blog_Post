@@ -34,14 +34,19 @@ class BlogController extends Controller
                 "user_id" => auth()->user()->id,
                 "title" => $request->title,
                 "description" => $request->description,
-                "photo" => $image
+                "photo" => $image,
+                "parent_category" => $request->category,
+                "tag" => $request->tag,
+                "child_category" => $request->sub_category
             ];
         } else {
             $filldata = [
                 "user_id" => auth()->user()->id,
                 "title" => $request->title,
                 "description" => $request->description,
-
+                "parent_category" => $request->category,
+                "tag" => $request->tag,
+                "child_category" => $request->sub_category
             ];
         }
 

@@ -15,7 +15,10 @@ class Blog extends Model
         'description',
         "deleted_by",
         "isDeleted",
-        "photo"
+        "photo",
+        "parent_category",
+        "tag",
+        "child_category"
     ];
 
     public function users()
