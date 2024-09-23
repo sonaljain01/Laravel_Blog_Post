@@ -14,4 +14,9 @@ class ChildCategory extends Model
         'category_id',
         "created_by"
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(ParentCategory::class, "category_id");
+    }
 }
