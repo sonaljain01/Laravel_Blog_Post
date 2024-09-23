@@ -8,6 +8,7 @@ use App\Http\Requests\BlogUpdateRequest;
 use App\Http\Controllers\Controller;
 use Http;
 use Illuminate\Http\Request;
+use Storage;
 
 class BlogController extends Controller
 {
@@ -26,12 +27,24 @@ class BlogController extends Controller
 
     public function store(BlogStoreRequest $request)
     {
-        $request->validated();
-        $filldata = [
-            "user_id" => auth()->user()->id,
-            "title" => $request->title,
-            "description" => $request->description
-        ];
+        $filldata = [];
+        if ($request->file('image')) {
+            $image = $this->uploadImage($request->file('image'));
+            $filldata = [
+                "user_id" => auth()->user()->id,
+                "title" => $request->title,
+                "description" => $request->description,
+                "photo" => $image
+            ];
+        } else {
+            $filldata = [
+                "user_id" => auth()->user()->id,
+                "title" => $request->title,
+                "description" => $request->description,
+
+            ];
+        }
+
         $sendData = [
             "subject" => "New blog created",
             "title" => $request->title,
@@ -115,5 +128,15 @@ class BlogController extends Controller
                 "message" => "Blog deleted successfully",
                 "deletedBy" => "Blog is deleted by You."
             ]);
+    }
+
+    protected function uploadImage($file)
+    {
+        $uploadFolder = 'users';
+        $image = $file;
+        $image_uploaded_path = $image->store($uploadFolder, 'public');
+        $uploadedImageUrl = Storage::disk('public')->url($image_uploaded_path);
+
+        return $uploadedImageUrl;
     }
 }

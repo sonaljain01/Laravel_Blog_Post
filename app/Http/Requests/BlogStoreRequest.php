@@ -27,7 +27,7 @@ class BlogStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            // 'user_id' => 'required|integer',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048|nullable',
         ];
     }
 

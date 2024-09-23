@@ -14,7 +14,8 @@ class Blog extends Model
         'title',
         'description',
         "deleted_by",
-        "isDeleted"
+        "isDeleted",
+        "photo"
     ];
 
     public function users()
