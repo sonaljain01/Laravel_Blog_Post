@@ -29,5 +29,24 @@ class ChildCatrgoryController extends Controller
         ], 500);
     }
 
+    public function update(ChildCatrgoryUpdateRequest $request, $id)
+    {
+        $data = [
+            "name" => $request->name,
+            "category_id" => $request->category_id,
+            "updated_by" => auth()->user()->id,
+        ];
+        $isUpdate = ChildCategory::where("id", $id)->update($data);
+        if ($isUpdate) {
+            return response()->json([
+                "status" => true,
+                "message" => "Child category updated successfully",
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Child category update failed",
+        ], 500);
+    }
 
 }
