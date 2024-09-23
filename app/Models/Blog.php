@@ -15,8 +15,8 @@ class Blog extends Model
         'description',
     ];
 
-    public function user_id()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 }

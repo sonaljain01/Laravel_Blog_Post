@@ -16,11 +16,13 @@ class ApiController extends Controller
     //Register API (POST, Formdata)
     public function register(AuthRequest $request)
     {
-        //Data validation
-        // $request->validated();
-
-        // User Model
-        User::create($request->validated());
+        $data = [
+            "name"=>$request->name,
+            "email"=>$request->email,
+            "password"=>Hash::make($request->password),
+            "type"=>$request->type,
+        ];
+        User::create($data);
 
         // Response
         return response()->json([

@@ -14,7 +14,8 @@ class BlogController extends Controller
     public function display()
     {
         //every one can see the blog
-        $blogs = Blog::all();
+        $id = auth()->user()->id;
+        $blogs = Blog::where("user_id", $id)->with("users:id,name")->paginate(20);
         return response()->json([
             "status" => true,
             "message" => "Blog fetched successfully",
@@ -37,7 +38,7 @@ class BlogController extends Controller
             "description" => $request->description
         ];
         $blog = Blog::create($filldata);
-        Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
+        // Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
         return response()->json([
             "status" => true,
             "message" => "Blog created successfully",
