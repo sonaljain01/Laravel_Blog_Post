@@ -13,10 +13,23 @@ class Blog extends Model
         'user_id',
         'title',
         'description',
+        'image',
+        'category_id',
+        'tags',
     ];
 
     public function user_id()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'blog_tag');
     }
 }
