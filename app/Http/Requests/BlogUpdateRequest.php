@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Models\Blog;
 class BlogUpdateRequest extends FormRequest
 {
     /**
@@ -17,7 +17,7 @@ class BlogUpdateRequest extends FormRequest
         // dd($blog_id);
         $user_id = auth()->user()->id;
         //only authorized user can update notes 
-        if(Message::where('id', $blog_id)->where('user_id', $user_id)->exists()){
+        if(Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()){
 
             return true;
         }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Models\Blog;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BlogDeleteRequest extends FormRequest
@@ -17,7 +17,7 @@ class BlogDeleteRequest extends FormRequest
 
         $user_id = auth()->user()->id;
         //only authorized user can update notes 
-        if(Message::where('id', $blog_id)->where('user_id', $user_id)->exists()){
+        if(Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()){
             return true;
         }
 
