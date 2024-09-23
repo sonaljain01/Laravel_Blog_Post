@@ -17,8 +17,38 @@ class AdminController extends Controller
         ]);
     }
 
-    public function deleteBlog(string $id){
-        $isDelete = Blog::find($id)->delete();
-        
+    public function destroy(string $id)
+    {
+
+        $isBlogExist = Blog::where("id", $id)->with("deletedBy:id,name")->get()[0];
+
+        if (!$isBlogExist) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog not found",
+
+            ]);
+        }
+
+        if ($isBlogExist->isDeleted) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog already deleted",
+            ]);
+        }
+
+        $isUpdate = $isBlogExist->update([
+            "isDeleted" => true,
+            "deleted_by" => auth()->user()->id
+        ]);
+
+        $deletedBy = $isBlogExist->deletedBy->name;
+
+        if ($isUpdate)
+            return response()->json([
+                "status" => true,
+                "message" => "Blog deleted successfully",
+                "deletedBy" => "Blog is deleted by admin $deletedBy"
+            ]);
     }
 }

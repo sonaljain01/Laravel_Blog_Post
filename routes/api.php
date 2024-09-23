@@ -35,5 +35,5 @@ Route::group(["prefix" => "admin/blog"], function () {
     Route::get("/", [AdminController::class, "display"]);
     Route::post("create", [AdminController::class, "store"]);
     Route::put("update", [AdminController::class, "update"]);
-    Route::delete("delete", [AdminController::class, "destroy"]);
+    Route::delete("delete/{id}", [AdminController::class, "destroy"]);
 })->middleware("auth:api");
