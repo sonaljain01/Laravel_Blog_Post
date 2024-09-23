@@ -16,4 +16,9 @@ class AdminController extends Controller
             "data" => $blogs
         ]);
     }
+
+    public function deleteBlog(string $id){
+        $isDelete = Blog::find($id)->delete();
+        
+    }
 }

@@ -13,10 +13,16 @@ class Blog extends Model
         'user_id',
         'title',
         'description',
+        "deleted_by",
+        "isDeleted"
     ];
 
     public function users()
     {
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function deletedBy(){
+        return $this->belongsTo(User::class,'deleted_by');
     }
 }

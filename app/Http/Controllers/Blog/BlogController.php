@@ -85,16 +85,35 @@ class BlogController extends Controller
     public function destroy(BlogDeleteRequest $request)
     {
         $blog_id = $request->blog_id;
-        if (!Blog::where("id", $blog_id)->delete()) {
+        $isBlogExist = Blog::find($blog_id);
+
+        if (!$isBlogExist) {
             return response()->json([
                 "status" => false,
                 "message" => "Blog not found",
-                "data" => []
+
             ]);
         }
-        return response()->json([
-            "status" => true,
-            "message" => "Blog deleted successfully",
+
+        if ($isBlogExist->isDeleted) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog already deleted",
+
+            ]);
+        }
+
+        $isUpdate = $isBlogExist->update([
+            "isDeleted" => true,
+            "deleted_by" => auth()->user()->id
         ]);
+
+
+        if ($isUpdate)
+            return response()->json([
+                "status" => true,
+                "message" => "Blog deleted successfully",
+                "deletedBy" => "Blog is deleted by You."
+            ]);
     }
 }
