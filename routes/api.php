@@ -3,6 +3,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Blog\BlogController;
 
+Route::get("/",function(){
+    return response()->json([
+        "status" => "up",
+        "message"=> "Welcome to Blog API",
+        "time" => now()
+    ]);
+});
+
 
 Route::group(["prefix" => "/auth"], function () {
     Route::post("register", [ApiController::class, "register"]);
