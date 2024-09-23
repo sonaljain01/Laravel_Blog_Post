@@ -132,7 +132,7 @@ class BlogController extends Controller
 
     protected function uploadImage($file)
     {
-        $uploadFolder = 'users';
+        $uploadFolder = 'blog-image';
         $image = $file;
         $image_uploaded_path = $image->store($uploadFolder, 'public');
         $uploadedImageUrl = Storage::disk('public')->url($image_uploaded_path);
