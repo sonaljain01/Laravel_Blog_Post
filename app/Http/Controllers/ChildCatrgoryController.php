@@ -49,4 +49,21 @@ class ChildCatrgoryController extends Controller
         ], 500);
     }
 
+    public function destroy($id)
+    {
+        $isDelete = ChildCategory::where("id", $id)->delete();
+        if ($isDelete) {
+            return response()->json([
+                "status" => true,
+                "message" => "Child category deleted successfully",
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Child category delete failed",
+        ], 500);
+    }
+
+    
+
 }
