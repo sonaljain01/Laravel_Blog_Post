@@ -15,8 +15,16 @@ class BlogController extends Controller
     public function display()
     {
         //only authenticate user can see their blog
+        if (!auth()->check()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Please login first",
+            ], 401);
+        }
         $id = auth()->user()->id;
-        $blogs = Blog::where("user_id", $id)->with("users:id,name")->paginate(20);
+        $blogs = Blog::where("user_id", $id)
+        ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
+        ->paginate(20);
         return response()->json([
             "status" => true,
             "message" => "Blog fetched successfully",

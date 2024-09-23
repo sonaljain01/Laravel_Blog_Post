@@ -23,10 +23,26 @@ class Blog extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function deletedBy(){
-        return $this->belongsTo(User::class,'deleted_by');
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tags::class, 'tags');
+    }
+
+    public function parentCategory()
+    {
+        return $this->belongsTo(ParentCategory::class, 'parent_category');
+    }
+
+    public function childCategory()
+    {
+        return $this->belongsTo(ChildCategory::class, 'child_category');
     }
 }
