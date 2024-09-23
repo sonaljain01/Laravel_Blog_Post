@@ -3,11 +3,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CatrgoryController;
+use App\Http\Controllers\ChildCatrgoryController;
 
-Route::get("/",function(){
+Route::get("/", function () {
     return response()->json([
         "status" => "up",
-        "message"=> "Welcome to Blog API",
+        "message" => "Welcome to Blog API",
         "time" => now()
     ]);
 });
@@ -36,4 +38,18 @@ Route::group(["prefix" => "admin/blog"], function () {
     Route::post("create", [AdminController::class, "store"]);
     Route::put("update", [AdminController::class, "update"]);
     Route::delete("delete/{id}", [AdminController::class, "destroy"]);
+})->middleware("auth:api");
+
+Route::group(["prefix" => "category"], function () {
+    Route::get("/", [CatrgoryController::class, "display"]);
+    Route::post("create", [CatrgoryController::class, "store"]);
+    Route::put("update/{id}", [CatrgoryController::class, "update"]);
+    Route::delete("delete/{id}", [CatrgoryController::class, "destroy"]);
+})->middleware("auth:api");
+
+Route::group(["prefix" => "category/child"], function () {
+    Route::get("/", [ChildCatrgoryController::class, "display"]);
+    Route::post("create", [ChildCatrgoryController::class, "store"]);
+    Route::put("update/{id}", [ChildCatrgoryController::class, "update"]);
+    Route::delete("delete/{id}", [ChildCatrgoryController::class, "destroy"]);
 })->middleware("auth:api");
