@@ -36,6 +36,8 @@ class BlogUpdateRequest extends FormRequest
             'title' => 'string|max:255',
             'description' => 'string',
             'blog_id' => 'required|integer|exists:blogs,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'tags' => 'string',
         ];
     }
 
@@ -48,6 +50,10 @@ class BlogUpdateRequest extends FormRequest
             'blog_id.required' => 'Blog id is required',
             'blog_id.integer' => 'Blog id must be an integer',
             'blog_id.exists' => 'Blog id does not exist',
+            'image.image' => 'Image must be an image',
+            'image.mimes' => 'Image must be a jpeg, png, jpg, gif, svg',
+            'image.max' => 'Image is too large',
+            'tags.string' => 'Tags must be a string',
         ];
     }
 }
