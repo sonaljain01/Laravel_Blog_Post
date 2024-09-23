@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Blog;
+
 class BlogUpdateRequest extends FormRequest
 {
     /**
@@ -11,12 +12,11 @@ class BlogUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if(!auth()->check()) {
+        if (!auth()->check()) {
             return false;
         }
-        // dd($blog_id);
         $user_id = auth()->user()->id;
-        //only authorized user can update notes 
+        // only authorized user can update notes 
         if(Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()){
 
             return true;
@@ -39,7 +39,8 @@ class BlogUpdateRequest extends FormRequest
         ];
     }
 
-    public function message(): array{
+    public function message(): array
+    {
         return [
             'title.string' => 'Title must be a string',
             'title.max' => 'Title is too long',
