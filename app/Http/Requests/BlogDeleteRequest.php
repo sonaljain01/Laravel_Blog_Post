@@ -14,16 +14,7 @@ class BlogDeleteRequest extends FormRequest
         if (!auth()->check()) {
             return false;
         }
-
-        $user_id = auth()->user()->id;
-        //only authorized user can update notes 
-
-        if (Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()) {
-
-           return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -35,6 +26,14 @@ class BlogDeleteRequest extends FormRequest
     {
         return [
             'blog_id' => 'required|integer|exists:blogs,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'blog_id.required' => 'Blog ID is required.',
+            'blog_id.exists' => 'The specified blog does not exist.',
         ];
     }
 }
