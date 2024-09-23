@@ -23,13 +23,37 @@ class BlogController extends Controller
         }
         $id = auth()->user()->id;
         $blogs = Blog::where("user_id", $id)
-        ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
-        ->paginate(20);
+            ->where("isdeleted", true)
+            ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
+            ->paginate(20);
+
+        $returnData = [];
+        
+        foreach ($blogs as $blog) {
+            $returnData[] = [
+                "id" => $blog->id,
+                "title" => $blog->title,
+                "description" => $blog->description,
+                "photo" => $blog->photo,
+                "category" => $blog->parentCategory->name ?? "",
+                "sub_category" => $blog->childCategory->name ?? "",
+                "tag" => $blog->tag ?? "",
+                "created_at" => $blog->created_at,
+                "created_by" => $blog->users->name,
+                "is_deleted" => $blog->isdeleted ? true : false,
+                "seo" => [
+                    "meta.name" => $blog->title,
+                    "meta.desc" => $blog->description,
+                    "meta.robots" => "noindex, nofollow"
+                ]
+
+            ];
+        }
         return response()->json([
             "status" => true,
             "message" => "Blog fetched successfully",
-            "data" => $blogs
-        ]);
+            "data" => $returnData
+        ], 200);
 
     }
 
