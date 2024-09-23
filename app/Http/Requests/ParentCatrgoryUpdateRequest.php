@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ParentCatrgoryRequest extends FormRequest
+class ParentCatrgoryUpdateRequest extends FormRequest
 {
-    protected string $err;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -21,11 +19,7 @@ class ParentCatrgoryRequest extends FormRequest
             return false;
         }
         return true;
-    }
-
-    protected function failedAuthorization()
-    {
-        throw new AuthorizationException($this->error);
+       
     }
 
     /**
