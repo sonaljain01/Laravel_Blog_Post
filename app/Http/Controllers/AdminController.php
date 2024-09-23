@@ -75,4 +75,24 @@ class AdminController extends Controller
                 "deletedBy" => "Blog is deleted by admin $deletedBy"
             ]);
     }
+    public function displaySpecificBlog(string $id)
+    {
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog not found",
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "message" => "Blog fetched successfully",
+            "data" => $blog,
+            "seo" => [
+                "title" => $blog->title,
+                "description" => $blog->description,
+                "meta.robots" => "noindex, nofollow"
+            ]
+        ]);
+    }
 }
