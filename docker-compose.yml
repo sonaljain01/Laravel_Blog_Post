@@ -1,0 +1,42 @@
+services:
+  mysql:
+      container_name: db
+      restart: always
+      image: mysql:latest
+      ports:
+      - "3306:3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: 'abcde'
+        MYSQL_DATABASE: 'laravel'
+        MYSQL_PASS: ''
+      volumes:
+        - ./db-data:/var/lib/mysql
+      networks:
+        - internal
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - internal
+    volumes:
+      - ./:/var/www
+    container_name: php
+    expose:
+      - "9000"
+  nginx:
+    build:
+      context: .
+      dockerfile: dockerize_laravel/Nginx/DockerFile
+    ports:
+      - "80:80"
+    networks:
+      - internal
+    volumes:
+      - ./:/var/www
+    container_name: nginx
+networks:
+  internal:
+    driver: bridge
+
+
