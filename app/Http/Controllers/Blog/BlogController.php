@@ -28,7 +28,7 @@ class BlogController extends Controller
             ->paginate(20);
 
         $returnData = [];
-        
+
         foreach ($blogs as $blog) {
             $returnData[] = [
                 "id" => $blog->id,
@@ -175,5 +175,26 @@ class BlogController extends Controller
         $uploadedImageUrl = Storage::disk('public')->url($image_uploaded_path);
 
         return $uploadedImageUrl;
+    }
+
+    public function displaySpecificBlog(string $id)
+    {
+        $blog = Blog::find($id);
+        if (!$blog) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog not found",
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "message" => "Blog fetched successfully",
+            "data" => $blog,
+            "seo" => [
+                "title" => $blog->title,
+                "description" => $blog->description,
+                "meta.robots" => "noindex, nofollow"
+            ]
+        ]);
     }
 }
