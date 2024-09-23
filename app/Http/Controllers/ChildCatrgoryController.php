@@ -64,6 +64,19 @@ class ChildCatrgoryController extends Controller
         ], 500);
     }
 
-    
-
+    public function display()
+    {
+        $category = ChildCategory::all();
+        if ($category->count() == 0) {
+            return response()->json([
+                "status" => false,
+                "message" => "Child category not found",
+            ]);
+        }
+        return response()->json([
+            "status" => true,
+            "message" => "Child category fetched successfully",
+            "category" => $category
+        ]);
+    }
 }
