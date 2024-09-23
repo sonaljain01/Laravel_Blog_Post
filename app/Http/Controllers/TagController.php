@@ -49,4 +49,23 @@ class TagController extends Controller
         ], 500);
     }
 
+    public function update($id, TagRequest $request)
+    {
+        $tag = Tags::find($id);
+        if ($tag) {
+            $data = [
+                "name" => $request->name
+            ];
+            $tag->update($data);
+            return response()->json([
+                "status" => true,
+                "message" => "Tag updated successfully"
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Tag not found"
+        ], 500);
+    }
+
 }
