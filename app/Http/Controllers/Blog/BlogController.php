@@ -13,7 +13,7 @@ class BlogController extends Controller
 {
     public function display()
     {
-        //every one can see the blog
+        //only authenticate user can see their blog
         $id = auth()->user()->id;
         $blogs = Blog::where("user_id", $id)->with("users:id,name")->paginate(20);
         return response()->json([
