@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Blog\BlogController;
@@ -53,3 +54,12 @@ Route::group(["prefix" => "category/child"], function () {
     Route::put("update/{id}", [ChildCatrgoryController::class, "update"]);
     Route::delete("delete/{id}", [ChildCatrgoryController::class, "destroy"]);
 })->middleware("auth:api");
+
+Route::group(["prefix" => "tag"], function () {
+    Route::group(["middleware" => "auth:api"], function () {
+        Route::post("/", [TagController::class, "display"]);
+        Route::post("create", [TagController::class, "store"]);
+        Route::post("update/{id}", [TagController::class, "update"]);
+        Route::post("delete/{id}", [TagController::class, "destroy"]);
+    });
+});
