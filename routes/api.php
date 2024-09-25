@@ -48,8 +48,8 @@ Route::group(["prefix" => "/role"], function () {
 })->middleware("auth:api");
 
 Route::group(["prefix"=> "comment"], function () {
-    Route::post("/create", [CommentController::class, "storeComment"]);
-    Route::get("/{blog}/comments", [CommentController::class, "displayComments"]);
+    Route::post("{blog_id}/comments", [CommentController::class, "storeComment"]);
+    Route::get("/{slug}/comments", [CommentController::class, "displayComments"]);
 })->middleware("auth:api");
 
 

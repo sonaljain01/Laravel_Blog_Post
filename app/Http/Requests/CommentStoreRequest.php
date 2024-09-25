@@ -25,8 +25,8 @@ class CommentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'blog_id' => 'required|integer|exists:blogs,id',
             'comment' => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:comments,id',
         ];
     }
 
@@ -38,7 +38,9 @@ class CommentStoreRequest extends FormRequest
             'blog_id.exists' => 'Blog ID does not exist',
             'comment.required' => 'Comment is required',
             'comment.string' => 'Comment must be a string',
-            'comment.max' => 'Comment length is upto 1000 characters onlys',
+            'comment.max' => 'Comment length is upto 1000 characters onlysx',
+            'parent_id.exists' => 'Parent ID does not exist',
+
         ];
     }
 }

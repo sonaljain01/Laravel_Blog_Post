@@ -29,7 +29,8 @@ class CommentController extends Controller
         $comment = Comment::create([
             "user_id" => $user->id,
             "blog_id" => $request->blog_id,
-            "comment" => $request->comment
+            "comment" => $request->comment,
+            "parent_id" => $request->parent_id,
         ]);
         return response()->json([
             "status" => true,
@@ -40,16 +41,24 @@ class CommentController extends Controller
 
     public function displayComments($slug)
     {
-        $blog = Blog::where('slug', $slug)->first();
+        $blog = Blog::where('slug', $slug)->with(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                      ->with('replies.user', 'user');
+        }])->first();
+
         if (!$blog) {
-            return response()->json(['status' => false, 'message' => 'Blog not found'], 404);
+            return response()->json([
+                'status' => false, 
+                'message' => 'Blog not found'
+            ], 404);
         }
 
-        $comments = $blog->comments()->with('user:id,name')->get();
+        // $comments = $blog->comments()->with('user:id,name')->get();
 
         return response()->json([
             'status' => true,
-            'data' => $comments,
+            'message' => 'Comments fetched successfully',
+            'data' => $blog->comments,
         ]);
     }
 }
