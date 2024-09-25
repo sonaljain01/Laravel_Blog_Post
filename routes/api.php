@@ -29,6 +29,7 @@ Route::group(["prefix" => "user"], function () {
 
 Route::group(["prefix" => "blog"], function () {
     Route::get("/", [BlogController::class, "display"]);
+    Route::get("/{id}", [BlogController::class, "displaySpecificBlog"]);
     Route::post("create", [BlogController::class, "store"]);
     Route::put("update", [BlogController::class, "update"]);
     Route::delete("delete", [BlogController::class, "destroy"]);
