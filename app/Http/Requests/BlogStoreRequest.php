@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Str;
-use App\Models\Blog;
 class BlogStoreRequest extends FormRequest
 {
     /**

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Categorycontroller;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\CommentController;
 
 Route::get("/",function(){
     return response()->json([
@@ -43,4 +44,9 @@ Route::group(["prefix" => "/category"], function () {
 
 Route::group(["prefix" => "/role"], function () {
     Route::delete("/blogs/{id}", [BlogController::class, "destroy"]); 
+})->middleware("auth:api");
+
+Route::group(["prefix"=> "comment"], function () {
+    Route::post("/create", [CommentController::class, "storeComment"]);
+    Route::get("/{blog}/comments", [CommentController::class, "displayComments"]);
 })->middleware("auth:api");
