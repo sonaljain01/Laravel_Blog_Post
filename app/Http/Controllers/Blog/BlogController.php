@@ -23,9 +23,11 @@ class BlogController extends Controller
         }
         $id = auth()->user()->id;
         $blogs = Blog::where("user_id", $id)
-            ->where("isdeleted", true)
+            ->where("isdeleted", false)
             ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
             ->paginate(20);
+
+           
 
         $returnData = [];
 
