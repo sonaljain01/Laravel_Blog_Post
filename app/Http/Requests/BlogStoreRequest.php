@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Str;
+use App\Models\Blog;
 class BlogStoreRequest extends FormRequest
 {
     /**
@@ -27,9 +28,9 @@ class BlogStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            // 'user_id' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'tags' => 'nullable|string',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug',
         ];
     }
 
@@ -45,6 +46,12 @@ class BlogStoreRequest extends FormRequest
             'image.max' => 'Image is too large',
             'tags.required' => 'Tags are required',
             'tags.string' => 'Tags must be a string',
+            'slug.unique' => 'Slug already exists, try with different slug',
+            'slug.max' => 'Slug is too long',
+            'slug.string' => 'Slug must be a string',
+            'slug.required' => 'Slug is required',
         ];
     }
+
+    
 }

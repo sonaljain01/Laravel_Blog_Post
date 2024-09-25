@@ -33,11 +33,12 @@ class BlogUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'string|max:255',
-            'description' => 'string',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
             'blog_id' => 'required|integer|exists:blogs,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'tags' => 'string',
+            'tags' => 'nullable|string',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug',
         ];
     }
 

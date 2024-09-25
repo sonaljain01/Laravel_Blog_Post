@@ -14,14 +14,11 @@ class BlogController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) 
-        {
+        if ($user->isAdmin()) {
             //every one can see the blog
             $blogs = Blog::with('category')->get();
 
-        } 
-        elseif ($user->isWriter()) 
-        {
+        } elseif ($user->isWriter()) {
             $blogs = Blog::where('user_id', $user->id)->with('category')->get();
         }
 
@@ -42,30 +39,30 @@ class BlogController extends Controller
     {
         $request->validated();
 
+        $slug = $request->slug ?: \Str::slug($request->title);
+
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Blog::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
         $metaTitle = $request->title;
-        // $metaDescription = substr(strip_tags($request->description), 0, 160);
         $metaDescription = substr($request->description, 0, 160);
 
-        // $metaKeywords = implode(', ', $request->tags ?? []);
-
-        if (is_array($request->tags)) 
-        {
+        if (is_array($request->tags)) {
             $metaKeywords = implode(', ', $request->tags);
-        } 
-        elseif (is_string($request->tags)) 
-        {
+        } elseif (is_string($request->tags)) {
             $metaKeywords = $request->tags;
-        } 
-        else 
-        {
-            $metaKeywords = ''; 
+        } else {
+            $metaKeywords = '';
         }
 
         $metaAuthor = auth()->user()->name;
 
         $imagePath = null;
-        if ($request->hasFile('image')) 
-        {
+        if ($request->hasFile('image')) {
             $imageName = time() . '-' . $request->file('image')->getClientOriginalName();
             $request->image->move(public_path('images/blogs'), $imageName);
             $imagePath = 'images/blogs/' . $imageName;
@@ -74,6 +71,7 @@ class BlogController extends Controller
         $filldata = [
             "user_id" => auth()->user()->id,
             "title" => $request->title,
+            "slug" => $slug,
             "description" => Purifier::clean($request->description),
             "image" => $imagePath,
         ];
@@ -86,11 +84,9 @@ class BlogController extends Controller
         //     "category_id" => $request->category_id,
         // ];
         $blog = Blog::create($filldata);
-        if ($request->tags) 
-        {
+        if ($request->tags) {
             $tags = explode(',', $request->tags);
-            foreach ($tags as $tag) 
-            {
+            foreach ($tags as $tag) {
                 $blog->tags()->create([
                     'name' => $tag
                 ]);
@@ -102,9 +98,10 @@ class BlogController extends Controller
             "message" => "Blog created successfully",
             "data" => [
                 "title" => $blog->title,
+                "slug" => $blog->slug,
                 "description" => $blog->description,
                 "blog" => $blog->load('tags'),
-                "seo"=>[
+                "seo" => [
                     "meta_title" => $metaTitle,
                     "meta_description" => $metaDescription,
                     "meta_keywords" => $metaKeywords,
@@ -120,26 +117,19 @@ class BlogController extends Controller
 
         $metaTitle = $request->title;
         $metaDescription = substr(strip_tags($request->description), 0, 160);
-        // $metaKeywords = $request->tags->pluck('name')->implode(',');
 
-        if (is_array($request->tags)) 
-        {
+        if (is_array($request->tags)) {
             $metaKeywords = implode(', ', $request->tags);
-        } 
-        elseif (is_string($request->tags)) 
-        {
+        } elseif (is_string($request->tags)) {
             $metaKeywords = $request->tags;
-        } 
-        else 
-        {
+        } else {
             $metaKeywords = '';
         }
 
         $metaAuthor = auth()->user()->name;
 
         $blog = Blog::find($blog_id);
-        if (!$blog) 
-        {
+        if (!$blog) {
             return response()->json([
                 "status" => false,
                 "message" => "Blog not found",
@@ -148,10 +138,8 @@ class BlogController extends Controller
         }
 
         $imagePath = $blog->image;
-        if ($request->hasFile('image')) 
-        {
-            if ($blog->image && file_exists(public_path($blog->image))) 
-            {
+        if ($request->hasFile('image')) {
+            if ($blog->image && file_exists(public_path($blog->image))) {
                 unlink(public_path($blog->image));
             }
 
@@ -161,19 +149,29 @@ class BlogController extends Controller
             $imagePath = 'images/blogs/' . $imageName;
         }
 
+        // Handle slug updation
+
+        $slug = $request->slug ?: \Str::slug($request->title);
+
+        $originalSlug = $slug;
+        $counter = 1;
+        while(Blog::where('slug', $slug)->where('id', '!=', $blog_id)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
         $filldata = [
             "title" => $request->title,
-            "description" => $request->description,
+            "description" => Purifier::clean($request->description),
             "image" => $imagePath,
             "category_id" => $request->category_id,
+            "slug" => $slug,
         ];
 
         $blog->update($filldata);
-        if ($request->tags) 
-        {
+        if ($request->tags) {
             $tags = explode(',', $request->tags);
-            foreach ($tags as $tag) 
-            {
+            foreach ($tags as $tag) {
                 $blog->tags()->create([
                     'name' => $tag
                 ]);
@@ -188,8 +186,7 @@ class BlogController extends Controller
         //     "image" => $request->image,
         //     "category_id" => $request->category_id,
         // ];
-        if (!Blog::where("id", $blog_id)->update($filldata)) 
-        {
+        if (!Blog::where("id", $blog_id)->update($filldata)) {
             return response()->json([
                 "status" => false,
                 "message" => "Blog not found",
@@ -201,7 +198,7 @@ class BlogController extends Controller
             "status" => true,
             "message" => "Blog updated successfully",
             "data" => Blog::find($blog_id),
-            "seo"=>[
+            "seo" => [
                 "meta_title" => $metaTitle,
                 "meta_description" => $metaDescription,
                 "meta_keywords" => $metaKeywords,
@@ -216,16 +213,14 @@ class BlogController extends Controller
         $user = auth()->user();
         \Log::info('Authenticated User:', [$user]);
 
-        if (!$user) 
-        {
+        if (!$user) {
             return response()->json([
                 "status" => false,
                 "message" => "Unauthorized access",
             ], 401); // Unauthorized
         }
 
-        if (!$blog) 
-        {
+        if (!$blog) {
             return response()->json([
                 "status" => false,
                 "message" => "Blog not found",
@@ -235,13 +230,9 @@ class BlogController extends Controller
 
         if ($user->isAdmin()) {
             $blog = delete();
-        } 
-        elseif ($user->isWriter() && $blog->user_id == $user->id) 
-        {
+        } elseif ($user->isWriter() && $blog->user_id == $user->id) {
             $blog->delete();
-        } 
-        else 
-        {
+        } else {
             return response()->json([
                 "status" => false,
                 "message" => "You are not authorized to delete this blog",
