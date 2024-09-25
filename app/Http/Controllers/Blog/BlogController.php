@@ -7,6 +7,8 @@ use App\Http\Requests\BlogStoreRequest;
 use App\Http\Requests\BlogUpdateRequest;
 use App\Http\Controllers\Controller;
 use Mews\Purifier\Facades\Purifier;
+use App\Models\Comment;
+use App\Http\Requests\CommentStoreRequest;
 
 class BlogController extends Controller
 {
