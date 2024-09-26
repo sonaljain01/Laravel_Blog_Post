@@ -12,6 +12,7 @@ class Blog extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'slug',
         'description',
         "deleted_by",
         "isDeleted",
