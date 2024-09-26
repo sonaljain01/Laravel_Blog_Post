@@ -186,11 +186,8 @@ class BlogController extends Controller
 
     public function displaySpecificBlog(string $id)
     {
-        $blog = Blog::with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])->find($id);
+        $blog = Blog::with(["users:id,name,email,type", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])->find($id);
 
-        return response()->json([
-            "data" => $blog
-        ]);
         if (!$blog) {
             return response()->json([
                 "status" => false,
