@@ -136,7 +136,7 @@ class BlogController extends Controller
 
     public function destroy(int $blog_id)
     {
-        if(! auth()->check()){
+        if (!auth()->check()) {
             return response()->json([
                 "status" => false,
                 "message" => "Please login to delete blog",
@@ -186,7 +186,11 @@ class BlogController extends Controller
 
     public function displaySpecificBlog(string $id)
     {
-        $blog = Blog::find($id);
+        $blog = Blog::with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])->find($id);
+
+        return response()->json([
+            "data" => $blog
+        ]);
         if (!$blog) {
             return response()->json([
                 "status" => false,
