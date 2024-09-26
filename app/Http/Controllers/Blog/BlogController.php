@@ -62,11 +62,23 @@ class BlogController extends Controller
     public function store(BlogStoreRequest $request)
     {
         $filldata = [];
+
+        $slug = $request->slug ?: \Str::slug($request->title);
+
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Blog::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+
         if ($request->file('image')) {
             $image = $this->uploadImage($request->file('image'));
             $filldata = [
                 "user_id" => auth()->user()->id,
                 "title" => $request->title,
+                'slug' => $slug,    
                 "description" => $request->description,
                 "photo" => $image,
                 "parent_category" => $request->category,
@@ -77,6 +89,7 @@ class BlogController extends Controller
             $filldata = [
                 "user_id" => auth()->user()->id,
                 "title" => $request->title,
+                "slug"=> $slug,
                 "description" => $request->description,
                 "parent_category" => $request->category,
                 "tag" => $request->tag,
@@ -94,7 +107,12 @@ class BlogController extends Controller
         return response()->json([
             "status" => true,
             "message" => "Blog created successfully",
-            "data" => $blog
+            "data" =>  [
+                "title" => $blog->title,
+                "slug" => $blog->slug,
+                "description" => $blog->description,
+                "blog" => $blog,
+            ]
         ]);
     }
 
@@ -103,7 +121,9 @@ class BlogController extends Controller
         $blog_id = $request->blog_id;
         $filldata = [
             "title" => $request->title,
-            "description" => $request->description
+            "slug"=> $request->slug,
+            "description" => $request->description,
+
         ];
         $sendData = [
             "subject" => "Blog with id." . $blog_id . " updated",
@@ -124,6 +144,15 @@ class BlogController extends Controller
                 "status" => false,
                 "message" => "Unable to update blog",
             ]);
+        }
+
+        $slug = $request->slug ?: \Str::slug($request->title);
+
+        $originalSlug = $slug;
+        $counter = 1;
+        while(Blog::where('slug', $slug)->where('id', '!=', $blog_id)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
         }
 
         // Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
