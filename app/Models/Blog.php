@@ -45,4 +45,9 @@ class Blog extends Model
     {
         return $this->belongsTo(ChildCategory::class, 'child_category');
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }
