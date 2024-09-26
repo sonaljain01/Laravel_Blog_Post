@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth; 
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\AuthRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 
 class ApiController extends Controller
 {
     
     //Register API (POST, Formdata)
-    public function register(AuthRequest $request)
+    public function register(RegisterRequest $request)
     {
         $data = [
             "name"=>$request->name,
