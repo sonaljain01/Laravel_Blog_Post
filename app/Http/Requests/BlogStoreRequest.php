@@ -26,6 +26,7 @@ class BlogStoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug',
             'description' => 'required|string',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048|nullable',
             "category" => "required|string|exists:parent_categories,id",
@@ -41,6 +42,9 @@ class BlogStoreRequest extends FormRequest
             'title.string' => 'Title must be a string',
             'description.required' => 'Description is required',
             'description.string' => 'Description must be a string',
+            'slug.unique' => 'Slug already exists, try with different slug',
+            'slug.max' => 'Slug is too long',
+            'slug.string' => 'Slug must be a string',
         ];
     }
 }
