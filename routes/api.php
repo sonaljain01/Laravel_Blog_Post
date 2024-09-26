@@ -6,7 +6,7 @@ use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CatrgoryController;
 use App\Http\Controllers\ChildCatrgoryController;
-
+use App\Http\Controllers\RatingController;
 Route::get("/", function () {
     return response()->json([
         "status" => "up",
@@ -64,3 +64,8 @@ Route::group(["prefix" => "tag"], function () {
         Route::post("delete/{id}", [TagController::class, "destroy"]);
     });
 });
+
+Route::group(["prefix"=> "rating"], function () {
+    Route::post("{blog_id}/createRating", [RatingController::class, "rate"]);
+    Route::get("{blog_id}/getRating", [RatingController::class, "getRating"]);
+})->middleware("auth:api");
