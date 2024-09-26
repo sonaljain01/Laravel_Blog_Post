@@ -27,7 +27,7 @@ class BlogController extends Controller
             ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
             ->paginate(20);
 
-           
+
 
         $returnData = [];
 
@@ -134,9 +134,14 @@ class BlogController extends Controller
         ]);
     }
 
-    public function destroy(BlogDeleteRequest $request)
+    public function destroy(int $blog_id)
     {
-        $blog_id = $request->blog_id;
+        if(! auth()->check()){
+            return response()->json([
+                "status" => false,
+                "message" => "Please login to delete blog",
+            ]);
+        }
         $isBlogExist = Blog::find($blog_id);
 
         if (!$isBlogExist) {

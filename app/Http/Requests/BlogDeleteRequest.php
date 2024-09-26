@@ -18,11 +18,11 @@ class BlogDeleteRequest extends FormRequest
 
         $user_id = auth()->user()->id;
         //only authorized user can update notes 
-        if (Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()) {
-            return true;
-        }
+        // if (Blog::where('id', $this->blog_id)->where('user_id', $user_id)->exists()) {
+        //     return true;
+        // }
 
-        return false;
+        return true;
     }
 
     /**
