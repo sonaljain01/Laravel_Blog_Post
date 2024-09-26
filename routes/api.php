@@ -6,6 +6,7 @@ use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CatrgoryController;
 use App\Http\Controllers\ChildCatrgoryController;
+use App\Http\Controllers\CommentController;
 
 Route::get("/", function () {
     return response()->json([
@@ -58,9 +59,20 @@ Route::group(["prefix" => "category/child"], function () {
 
 Route::group(["prefix" => "tag"], function () {
     Route::group(["middleware" => "auth:api"], function () {
-        Route::post("/", [TagController::class, "display"]);
+        Route::get("/", [TagController::class, "display"]);
         Route::post("create", [TagController::class, "store"]);
         Route::post("update/{id}", [TagController::class, "update"]);
         Route::post("delete/{id}", [TagController::class, "destroy"]);
     });
 });
+
+Route::group(["prefix" => "comment"], function () {
+    Route::group(["middleware" => "auth:api"], function () {
+        Route::get("/{id}", [CommentController::class, "display"]);
+        Route::post("create", [CommentController::class, "store"]);
+        Route::post("update/{id}", [CommentController::class, "update"]);
+        Route::post("delete/{id}", [CommentController::class, "destroy"]);
+    });
+});
+
+
