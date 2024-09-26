@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Http\Requests\BlogRatingRequest;
 use App\Models\Blog;
 use App\Models\Rating;
