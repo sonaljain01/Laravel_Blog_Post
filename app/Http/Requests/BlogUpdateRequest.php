@@ -47,6 +47,7 @@ class BlogUpdateRequest extends FormRequest
             'title' => 'string|max:255',
             'description' => 'string',
             'blog_id' => 'required|integer|exists:blogs,id',
+            'slug' => 'nullable|string|max:255|unique:blogs,slug',
         ];
     }
 
